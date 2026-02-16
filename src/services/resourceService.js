@@ -1,17 +1,31 @@
 const resourceRepository = require("../repositories/resourceRepository");
 
 
+/* Registro de un nuevo documento (metadatos) */
+async function registerResource(document) {
+  return await resourceRepository.createResource(document);
+}
+
+/* Obtener recurso por productId */
+async function getResourceByProductId(productId) {
+  return await resourceRepository.findByProductId(productId);
+}
+
+
+
 /* Servicio para manejar la lógica de recursos (archivos) */
 async function addFile(file, metadata) {
   return await resourceRepository.addFileToGridFS(file, metadata);
 }
 
-
+/* Servicio para obtener archivos asociados a un productId */
 async function getFilesByProductId(productId) {
   try {
     const files = await resourceRepository.getFilesByProductId(productId);
 
     return files.map(file => ({
+      product_type: file.metadata?.product_type || "unknown",
+      resource_location: file.metadata?.resource_location || "unknown",
       file_id: file._id.toString(),
       filename: file.filename,
       title: file.metadata?.title || file.filename,
@@ -25,7 +39,7 @@ async function getFilesByProductId(productId) {
   }
 }
 
-
+/* Servicio para obtener un archivo por su ID */
 async function getFileById(fileId, res) {
   try {
     const downloadStream = resourceRepository.getFileStreamById(fileId);
@@ -44,16 +58,23 @@ async function getFileById(fileId, res) {
   }
 }
 
-
-/* Registro de un nuevo documento (metadatos) */
-async function registerResource(document) {
-  return await resourceRepository.createResource(document);
+/* Servicio para eliminar archivo por ID */
+async function deleteFileById(fileId) {
+  try {
+    await resourceRepository.deleteFileById(fileId);
+    return { message: "Archivo eliminado correctamente", file_id: fileId };
+  } catch (err) {
+    console.error("Error en resourceService.deleteFileById:", err);
+    throw new Error("Error al eliminar archivo");
+  }
 }
 
-async function getResourceByProductId(productId) {
-  return await resourceRepository.findByProductId(productId);
-}
 
-
-
-module.exports = { addFile, getFilesByProductId, getFileById, registerResource, getResourceByProductId};
+module.exports = {
+  registerResource,
+  getResourceByProductId,
+  addFile,
+  getFilesByProductId,
+  getFileById,
+  deleteFileById
+};

@@ -82,10 +82,21 @@ function getFileStreamById(fileId) {
   return gridfsBucket.openDownloadStream(_id);
 }
 
+
+/**
+ * Eliminar archivo por ID
+ */
+async function deleteFileById(fileId) {
+  const _id = new mongoose.Types.ObjectId(fileId);
+  return gridfsBucket.delete(_id); // elimina el archivo de GridFS
+}
+
+
 module.exports = {
   createResource,
   findByProductId,
   addFileToGridFS,
   getFilesByProductId,
-  getFileStreamById
+  getFileStreamById,
+  deleteFileById
 };

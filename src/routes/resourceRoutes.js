@@ -10,6 +10,7 @@ const upload = multer(); // usa memoria temporal
 router.post("/upload", authMiddleware, upload.single("file"), resourceController.uploadFile);
 router.get("/:product_id", authMiddleware, resourceController.getFilesByProductId);
 router.get("/file/:id", authMiddleware, resourceController.getFileById);
+router.delete("/file/:id", authMiddleware, resourceController.deleteFileById);
 
 
 module.exports = router;
