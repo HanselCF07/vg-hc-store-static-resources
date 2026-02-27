@@ -1,4 +1,4 @@
-const resourceService = require("../services/resourceService");
+const gridFSServices = require("../services/gridFSServices");
 
 
 /* Controlador para subir un archivo con metadatos */
@@ -12,7 +12,7 @@ async function uploadFile(req, res) {
       status: 1
     };
 
-    const savedFile = await resourceService.addFile(req.file, metadata);
+    const savedFile = await gridFSServices.addFile(req.file, metadata);
 
     res.json({
       message: "File uploaded successfully",
@@ -24,7 +24,7 @@ async function uploadFile(req, res) {
         file_id: savedFile._id,
         filename: savedFile.filename,
         mimetype: savedFile.mimetype,
-        url: `/api/v1/vg-hc-store/static-resources/file/${savedFile._id}`,
+        url: `/api/v1/vg-hc-store/static-resources/gfs/file/${savedFile._id}`,
         uploaded_at: savedFile.uploadDate
       }
     });
@@ -37,7 +37,10 @@ async function uploadFile(req, res) {
 async function getFilesByProductId(req, res) {
   try {
     const productId = req.params.product_id;
-    const files = await resourceService.getFilesByProductId(productId);
+    const productType = req.query.product_type
+    const resourceLocation = req.query.resource_location
+
+    const files = await gridFSServices.getFilesByProductId(productId, productType, resourceLocation);
 
     if (!files || files.length === 0) {
       return res.status(404).json({ error: "No se encontraron archivos para este producto" });
@@ -53,14 +56,14 @@ async function getFilesByProductId(req, res) {
 /* Controlador para obtener un archivo por su ID */
 async function getFileById(req, res) {
   const fileId = req.params.id;
-  return resourceService.getFileById(fileId, res);
+  return gridFSServices.getFileById(fileId, res);
 }
 
 /* Controlador para eliminar archivo por ID */
 async function deleteFileById(req, res) {
   try {
     const fileId = req.params.id;
-    const result = await resourceService.deleteFileById(fileId);
+    const result = await gridFSServices.deleteFileById(fileId);
     res.json(result);
   } catch (err) {
     console.error("Error en resourceController.deleteFileById:", err);

@@ -1,27 +1,15 @@
-const resourceRepository = require("../repositories/resourceRepository");
-
-
-/* Registro de un nuevo documento (metadatos) */
-async function registerResource(document) {
-  return await resourceRepository.createResource(document);
-}
-
-/* Obtener recurso por productId */
-async function getResourceByProductId(productId) {
-  return await resourceRepository.findByProductId(productId);
-}
-
+const gridFSRepository = require("../repositories/gridFSRepository");
 
 
 /* Servicio para manejar la lógica de recursos (archivos) */
 async function addFile(file, metadata) {
-  return await resourceRepository.addFileToGridFS(file, metadata);
+  return await gridFSRepository.addFileToGridFS(file, metadata);
 }
 
 /* Servicio para obtener archivos asociados a un productId */
-async function getFilesByProductId(productId) {
+async function getFilesByProductId(productId, productType, resourceLocation) {
   try {
-    const files = await resourceRepository.getFilesByProductId(productId);
+    const files = await gridFSRepository.getFilesByProductId(productId, productType, resourceLocation);
 
     return files.map(file => ({
       product_type: file.metadata?.product_type || "unknown",
@@ -42,7 +30,7 @@ async function getFilesByProductId(productId) {
 /* Servicio para obtener un archivo por su ID */
 async function getFileById(fileId, res) {
   try {
-    const downloadStream = resourceRepository.getFileStreamById(fileId);
+    const downloadStream = gridFSRepository.getFileStreamById(fileId);
 
     // Manejo de errores del stream
     downloadStream.on("error", (err) => {
@@ -61,7 +49,7 @@ async function getFileById(fileId, res) {
 /* Servicio para eliminar archivo por ID */
 async function deleteFileById(fileId) {
   try {
-    await resourceRepository.deleteFileById(fileId);
+    await gridFSRepository.deleteFileById(fileId);
     return { message: "Archivo eliminado correctamente", file_id: fileId };
   } catch (err) {
     console.error("Error en resourceService.deleteFileById:", err);
@@ -70,9 +58,8 @@ async function deleteFileById(fileId) {
 }
 
 
+
 module.exports = {
-  registerResource,
-  getResourceByProductId,
   addFile,
   getFilesByProductId,
   getFileById,
