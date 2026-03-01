@@ -5,13 +5,13 @@ async function connectDB() {
 
   switch (process.env.NODE_ENV) {
     case "production":
-      mongoUri = process.env.MONGO_URI_PRD;
+      mongoUri = process.env.CONN_MONGO_PRD;
       break;
     case "qas":
-      mongoUri = process.env.MONGO_URI_QAS;
+      mongoUri = process.env.CONN_MONGO_QAS;
       break;
     default:
-      mongoUri = process.env.MONGO_URI_DEV;
+      mongoUri = process.env.CONN_MONGO_DEV;
   }
 
   try {
