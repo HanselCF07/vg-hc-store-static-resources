@@ -2,4 +2,4 @@
 Example Api with Node
 
 # Build the image 
-    docker build -t vg-hc-store-static-resources:v1 .
+    docker build --no-cache -t vg-hc-store-static-resources:v1 .
