@@ -2,7 +2,7 @@
 FROM node:22-alpine
 
 # Crea y define el directorio de trabajo
-WORKDIR /usr/src/vg-hc-store-static-resources
+WORKDIR /vg-hc-store-static-resources
 
 # Copia solo los archivos de dependencias para aprovechar el caché de capas de Docker
 COPY package*.json ./
