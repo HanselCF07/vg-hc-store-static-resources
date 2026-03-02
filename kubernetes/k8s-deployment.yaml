@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vg-hc-store-static-resources
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vg-hc-store-static-resources
+  template:
+    metadata:
+      labels:
+        app: vg-hc-store-static-resources
+    spec:
+      containers:
+      - name: vg-hc-store-static-resources
+        image: vg-hc-store-static-resources:v1
+        ports:
+        - containerPort: 3000

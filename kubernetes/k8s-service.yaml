@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vg-hc-store-static-resources-service
+spec:
+  selector:
+    app: vg-hc-store-static-resources
+  ports:
+    - protocol: TCP
+      port: 3000 # Puerto expuesto dentro del cluster
+      targetPort: 3000 # Puerto en el contenedor
+  type: ClusterIP
+
+

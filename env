@@ -1,0 +1,41 @@
+# Puerto del servidor
+PORT=3000
+
+# Entorno de ejecución (development | qas | production)
+NODE_ENV=production
+
+# Clave secreta JWT
+JWT_SECRET=c2VjdXJlLWtlLWZvci1qd3QtYXV0aC10b2tlbi1zaWduaW5nLWluLWZsYXNoLWFwcC1leGFtcGxlLXNlcnZlcg==
+
+# Bucket de GridFS
+GRIDFS_BUCKET=uploads
+
+# Connection de Postgres para distintos entornos
+# DEV
+DB_NAME_DEV=db_store
+DB_USER_DEV=dev_user
+DB_PASS_DEV=dev_123
+DB_HOST_DEV=192.168.1.47
+DB_PORT_DEV=5432
+
+# QAS
+DB_NAME_QAS=db_store
+DB_USER_QAS=dev_user
+DB_PASS_QAS=dev_123
+DB_HOST_QAS=192.168.1.47
+DB_PORT_QAS=5432
+
+# PRD
+DB_NAME_PRD=db_store
+DB_USER_PRD=dev_user
+DB_PASS_PRD=dev_123
+DB_HOST_PRD=192.168.1.47
+DB_PORT_PRD=5432
+
+
+# Connection de MongoDB para distintos entornos
+CONN_MONGO_DEV=mongodb://dev_user:dev_password@192.168.1.47:27017/vg_hc_store_resources
+CONN_MONGO_QAS=mongodb://dev_user:dev_password@192.168.1.47:27017/vg_hc_store_resources
+CONN_MONGO_PRD=mongodb://dev_user:dev_password@192.168.1.47:27017/vg_hc_store_resources
+
+
