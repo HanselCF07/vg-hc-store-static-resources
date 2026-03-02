@@ -16,5 +16,8 @@ COPY . .
 # Expone el puerto que usa Express (por defecto suele ser 3000)
 EXPOSE 3000
 
+# user usuario node
+USER node
+
 # Ejecuta la aplicación
 CMD ["node", "server.js"]
