@@ -18,7 +18,7 @@ async function getFilesByProductId(productId, productType, resourceLocation) {
       filename: file.filename,
       title: file.metadata?.title || file.filename,
       mimetype: file.metadata?.mimetype,
-      url: `/api/v1/vg-hc-store/static-resources/file/${file._id}`,
+      url: `/api/v1/vg-hc-store/static-resources/public/gfs/file/${file._id}`,
       uploaded_at: file.uploadDate
     }));
   } catch (err) {

@@ -24,7 +24,7 @@ async function uploadFile(req, res) {
         file_id: savedFile._id,
         filename: savedFile.filename,
         mimetype: savedFile.mimetype,
-        url: `/api/v1/vg-hc-store/static-resources/gfs/file/${savedFile._id}`,
+        url: `/api/v1/vg-hc-store/static-resources/public/gfs/file/${savedFile._id}`,
         uploaded_at: savedFile.uploadDate
       }
     });
