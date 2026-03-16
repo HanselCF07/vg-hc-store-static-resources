@@ -16,6 +16,7 @@ function authMiddleware(requiredPermissions = []) {
       const decoded = jwt.verify(token.replace("Bearer ", ""), jwtSecret);
       const userPublicKey = decoded.key;
 
+      // Search the Database
       const user = await User.findOne({
         where: {
           user_public_key: userPublicKey,
@@ -32,10 +33,10 @@ function authMiddleware(requiredPermissions = []) {
         return res.status(401).json({ error: "Invalid Access" });
       }
 
-      // Validar permisos
+      // Validate permissions
       const permissions = user.Role.RolePermissions.map(p => p.permission);
 
-      // Cambia según si quieres "todos" o "alguno"
+      // It changes depending on whether you want "all" or "some"
       const hasPermission = requiredPermissions.some(p => permissions.includes(p));
       if (!hasPermission) {
         return res.status(403).json({ error: "Insufficient permissions" });

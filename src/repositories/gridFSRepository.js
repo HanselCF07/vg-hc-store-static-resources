@@ -5,7 +5,8 @@ const { Readable } = require("stream");
 
 let gridfsBucket;
 
-// Inicializar GridFSBucket cuando la conexión esté abierta
+
+// Initialize GridFSBucket when the connection is open
 mongoose.connection.once("open", () => {
   gridfsBucket = new GridFSBucket(mongoose.connection.db, {
     bucketName: "uploads"
@@ -14,7 +15,7 @@ mongoose.connection.once("open", () => {
 
 
 /**
- * Subir archivo a GridFS con metadatos
+ * Upload file to GridFS with metadata
  */
 async function addFileToGridFS(file, metadata) {
   return new Promise((resolve, reject) => {
@@ -27,13 +28,13 @@ async function addFileToGridFS(file, metadata) {
       }
     });
 
-    // Convertir buffer en stream legible
+    // Convert buffer into readable stream
     const readableFile = new Readable();
-    readableFile.push(file.buffer); // Agrega el buffer al stream
-    readableFile.push(null); // Indica el final del stream
-    readableFile.pipe(uploadStream); // Pipe directo al uploadStream de GridFS
+    readableFile.push(file.buffer); // Add the buffer to the stream
+    readableFile.push(null); // Indicates the end of the stream
+    readableFile.pipe(uploadStream); // Direct pipe to GridFS uploadStream
 
-    // Devolver información relevante del archivo subido
+    // Return relevant information from the uploaded file
     uploadStream.on("finish", () => { 
       resolve({ 
         _id: uploadStream.id,            
@@ -44,17 +45,19 @@ async function addFileToGridFS(file, metadata) {
       });
     });
 
-    // Manejo de errores
+    // Error handling
     uploadStream.on("error", reject);
   });
 }
 
+
 /**
- * Obtener archivos asociados a un productId
+ * Retrieve files associated with a productId
  */
 async function getFilesByProductId(productId, productType, resourceLocation) {
   var dict_search = {
-    "metadata.product_id": productId
+    "metadata.product_id": productId,
+    "metadata.status": 1
   }
 
   if (productType) {
@@ -70,7 +73,7 @@ async function getFilesByProductId(productId, productType, resourceLocation) {
 
 
 /**
- * Descargar archivo por ID
+ * Download file by ID
  */
 function getFileStreamById(fileId) {
   const _id = new mongoose.Types.ObjectId(fileId);
@@ -79,11 +82,11 @@ function getFileStreamById(fileId) {
 
 
 /**
- * Eliminar archivo por ID
+ * Delete file by ID
  */
 async function deleteFileById(fileId) {
   const _id = new mongoose.Types.ObjectId(fileId);
-  return gridfsBucket.delete(_id); // elimina el archivo de GridFS
+  return gridfsBucket.delete(_id); // Delete the GridFS file
 }
 
 
@@ -93,3 +96,4 @@ module.exports = {
   getFileStreamById,
   deleteFileById
 };
+

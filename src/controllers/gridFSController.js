@@ -1,14 +1,26 @@
 const gridFSServices = require("../services/gridFSServices");
 
 
-/* Controlador para subir un archivo con metadatos */
+/* Controller for uploading a file with metadata */
 async function uploadFile(req, res) {
   try {
+    
+    const productId = req.body.product_id;
+    const productType = req.body.product_type;
+    const resourceLocation = req.body.resource_location; // head, background, catalog, carousel
+    const title = req.body.title;
+
+    if (!productId || !productType || !resourceLocation || !title) {
+      return res.status(400).json({
+        error: "Information missing"
+      });
+    }
+    
     const metadata = {
-      product_id: req.body.product_id,
-      product_type: req.body.product_type,
-      resource_location: req.body.resource_location || "catalog", // head, background, catalog, carousel
-      title: req.body.title || "cover_art",
+      product_id: productId,
+      product_type: productType,
+      resource_location: resourceLocation,
+      title: title,
       status: 1
     };
 
@@ -29,16 +41,23 @@ async function uploadFile(req, res) {
       }
     });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.error("Error in gridFSController.uploadFile:", err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 }
 
-/* Controlador para obtener archivos asociados a un productId */
+/* Controller to obtain files associated with a productId */
 async function getFilesByProductId(req, res) {
   try {
     const productId = req.params.product_id;
-    const productType = req.query.product_type
-    const resourceLocation = req.query.resource_location
+    const productType = req.query.product_type;
+    const resourceLocation = req.query.resource_location;
+
+    if (!productId || !productType || !resourceLocation) {
+      return res.status(400).json({
+        error: "Information missing"
+      });
+    }
 
     const files = await gridFSServices.getFilesByProductId(productId, productType, resourceLocation);
 
@@ -48,26 +67,48 @@ async function getFilesByProductId(req, res) {
 
     res.json({ product_id: productId, files });
   } catch (err) {
-    console.error("Error en resourceController.getFilesByProductId:", err);
-    res.status(500).json({ error: "Error interno del servidor" });
+    console.error("Error in gridFSController.getFilesByProductId:", err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 }
 
-/* Controlador para obtener un archivo por su ID */
+
+/* Controller to retrieve a file by its ID */
 async function getFileById(req, res) {
-  const fileId = req.params.id;
-  return gridFSServices.getFileById(fileId, res);
+  try {  
+    const fileId = req.params.id;
+
+    if (!fileId) {
+      return res.status(400).json({
+        error: "Information missing"
+      });
+    }
+
+    return gridFSServices.getFileById(fileId, res);
+  } catch (err) {
+    console.error("Error in gridFSController.getFileById:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 }
 
-/* Controlador para eliminar archivo por ID */
+
+/* Controller to delete file by ID */
 async function deleteFileById(req, res) {
   try {
     const fileId = req.params.id;
+
+    if (!fileId) {
+      return res.status(400).json({
+        error: "Information missing"
+      });
+    }
+
     const result = await gridFSServices.deleteFileById(fileId);
+
     res.json(result);
   } catch (err) {
-    console.error("Error en resourceController.deleteFileById:", err);
-    res.status(500).json({ error: "Error interno del servidor" });
+    console.error("Error in gridFSController.deleteFileById:", err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 }
 

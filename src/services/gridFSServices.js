@@ -1,12 +1,13 @@
 const gridFSRepository = require("../repositories/gridFSRepository");
 
 
-/* Servicio para manejar la lógica de recursos (archivos) */
+/* Service for handling resource logic (files) */
 async function addFile(file, metadata) {
   return await gridFSRepository.addFileToGridFS(file, metadata);
 }
 
-/* Servicio para obtener archivos asociados a un productId */
+
+/* Service to obtain files associated with a productId */
 async function getFilesByProductId(productId, productType, resourceLocation) {
   try {
     const files = await gridFSRepository.getFilesByProductId(productId, productType, resourceLocation);
@@ -27,18 +28,19 @@ async function getFilesByProductId(productId, productType, resourceLocation) {
   }
 }
 
-/* Servicio para obtener un archivo por su ID */
+
+/* Service to obtain a file by your ID */
 async function getFileById(fileId, res) {
   try {
     const downloadStream = gridFSRepository.getFileStreamById(fileId);
 
-    // Manejo de errores del stream
+    // Stream error handling
     downloadStream.on("error", (err) => {
       console.error("Error al descargar archivo:", err);
       res.status(404).json({ error: "Archivo no encontrado" });
     });
 
-    // Pipe directo al response
+    // Direct pipe to response
     downloadStream.pipe(res);
   } catch (err) {
     console.error("Error en resourceService.getFileById:", err);
@@ -46,7 +48,8 @@ async function getFileById(fileId, res) {
   }
 }
 
-/* Servicio para eliminar archivo por ID */
+
+/* Service to delete files by ID */
 async function deleteFileById(fileId) {
   try {
     await gridFSRepository.deleteFileById(fileId);
@@ -56,7 +59,6 @@ async function deleteFileById(fileId) {
     throw new Error("Error al eliminar archivo");
   }
 }
-
 
 
 module.exports = {
